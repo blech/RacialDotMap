@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<head>
+<title>dotmap - husk.org</title>
+<meta charset="utf-8">
+<style>
+
+body {
+  margin: 0;
+}
+
+path {
+  fill: none;
+  stroke: #eee;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.major_road { stroke: #eee; }
+.minor_road { stroke: #eee; }
+.path { stroke: #66f; }
+.highway { stroke: #eee; stroke-width: 2px; }
+.rail { stroke: dotted #eee; }
+
+/* .buildings path { stroke: #ccc; stroke-width: 1px; fill: none; } */
+
+</style>
+<body>
+
+<div id="map" style="width: 100%; height: 100%;"></div>
+
+<script type="text/javascript" src="polymaps.min.js"></script>
+<script>
+
+var po = org.polymaps;
+
+var map = po.map()
+    .container(document.getElementById("map").appendChild(po.svg("svg")))
+    .center({lat: 38.046500, lon: -78.518904})
+    .zoom(6)
+    .zoomRange([4, 13])
+    .add(po.interact());
+
+var label_features = function(e) {
+    var count = e.features.length;
+    
+    for (var i = 0; i < count; i++) {
+        var f = e.features[i];
+        f.element.setAttribute('class', f.data.properties.kind);
+    }
+};
+
+map.add(po.image()
+    .url("http://54.225.113.189/DotMap/tiles4/{Z}/{X}/{Y}.png"));
+
+map.add(po.compass()
+    .pan("none"));
+
+var hash = po.hash();
+map.add(hash);
+
+var touch = po.touch();
+map.add(touch);
+
+function load(e) {
+  for (var i = 0; i < e.features.length; i++) {
+    var feature = e.features[i];
+    feature.element.setAttribute("id", feature.data.id);
+    feature.element.setAttribute("class", "pub_point");
+  }
+}
+
+</script>
